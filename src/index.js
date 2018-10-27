@@ -6,8 +6,8 @@ var config = {
     // parent: 'phaser-example',
     title: "2SPOOKY2CODE",
     url: "http://www.2spooky2code.com",
-    width: 600,
-    height: 400,
+    width: 1000,
+    height: 500,
     input: {
         keyboard: true,
     },
@@ -15,7 +15,7 @@ var config = {
         default: 'arcade',
         arcade: {
             gravity: { y: 500 },
-            debug: true
+            debug: false
         }
     },	
     scene: {
@@ -35,12 +35,13 @@ var bats;
 
 // Phaser game var
 var game = new Phaser.Game(config);
-
+var gameOver = false;
 var score = 0;
 
 function preload ()
 {
     this.load.image('bgWerewolf', './assets/img/backgrounds/bgWerewolf.png');
+    this.load.image('rip', './assets/img/backgrounds/rip.png');
     this.load.image('ground', './assets/img/backgrounds/ground.png');
     this.load.image('blueCandy', './assets/img/objects/blueCandy.png');
     this.load.spritesheet('clara', 
@@ -66,7 +67,7 @@ function create ()
     /* Creating game objects */
     
     // background
-    const bgWerewolf = this.add.sprite(0, 0, 'bgWerewolf').setOrigin(0, 0);
+    const bgWerewolf = this.add.sprite(0, 100, 'bgWerewolf').setOrigin(0, 0).setScale(.25);
     // bgWerewolf.scale.x = 10
     // this.add.tileSprite(-100, -230, 1920, 1920, 'bgWerewolf');
 
@@ -130,9 +131,10 @@ function create ()
     });
 
 
+
     var x = (player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
 
-    var bat = bats.create(x, 16, 'bat').setScale(.1);
+    var bat = bats.create(x, 16, 'bat').setScale(.2);
     bat.setBounce(1);
     bat.setCollideWorldBounds(true);
     bat.setVelocity(Phaser.Math.Between(-200, 200), 20);
@@ -143,7 +145,10 @@ function create ()
         child.enableBody(true, child.x, 0, true, true);
 
     });
-    
+
+    bat.enableUpdate = true;
+    // bat.onUpdate.add(onUpdate, this);
+
     this.cameras.main.startFollow(player);
     var bgMusic = this.sound.add('BleedingMoon');
     bgMusic.play();
@@ -151,6 +156,16 @@ function create ()
 
 function update ()
 {
+    if(gameOver){
+        // this.add.tileSprite(-100, -230, 1920, 1920, 'rip');
+        // this.add.sprite(0, 0, 'rip').setOrigin(0, 0)
+        const bgWerewolf = this.add.sprite(-750, 0, 'rip').setOrigin(0, 0).setScale(.4);
+
+        this.physics.pause();
+
+        return;
+    };
+
     if (cursors.left.isDown)
     {
         player.setVelocityX(-160);
@@ -188,11 +203,13 @@ const collectCandy = (player, candy) =>
     scoreText.setText('Score: ' + score);
 }
 const hitPlayer = (player, bat) => {
-    this.physics.pause();
 
     player.setTint(0xff0000);
-
     player.anims.play('turn');
-
     gameOver = true;
+}
+function onUpdate(anim, frame) {
+
+    text.text = 'Frame ' + frame.index;
+
 }
