@@ -14,20 +14,21 @@ var config = {
     physics: {
         default: 'arcade',
         arcade: {
-            gravity: { y: 300 },
+            gravity: { y: 500 },
             debug: false
         }
     },	
     scene: {
         preload: preload,
         update: update,
-        create: create
+        create: create,
+        render: render 
     }
 };
 var cursors;
 var platforms;
 var player;
-var stars;
+var candy;
 var scoreText;
 var bombs;
 
@@ -41,10 +42,10 @@ function preload ()
 {
     this.load.image('skyBackground', './assets/img/backgrounds/skyBackground.jpg');
     this.load.image('ground', './assets/img/backgrounds/ground.png');
-    this.load.image('star', './assets/img/objects/star.png');
-    this.load.spritesheet('dude', 
-        './assets/img/characters/dude.png',
-        { frameWidth: 32, frameHeight: 48 }
+    this.load.image('blueCandy', './assets/img/objects/blueCandy.png');
+    this.load.spritesheet('clara', 
+        './assets/img/characters/clara.png',
+        { frameWidth: 438, frameHeight: 620 }
     );
 
 }
@@ -53,19 +54,22 @@ function create ()
 {
     // Built-in Keyboard manager
     cursors = this.input.keyboard.createCursorKeys();    
-    
+
     /* Creating game objects */
     
     // background
-    const background = this.add.image(300, 200, 'skyBackground');
+    // const background = this.add.image(300, 200, 'skyBackground');
+    this.add.tileSprite(-100, -230, 1920, 1920, 'skyBackground');
+
     platforms = this.physics.add.staticGroup();
     platforms.create(200, 400, 'ground').setScale(2).refreshBody();
     platforms.create(600,300, 'ground');
     // player
-    player = this.physics.add.sprite(200, 200, 'dude');
+    player = this.physics.add.sprite(200, 200, 'clara').setScale(.1);
+
     // stars
-    stars = this.physics.add.group({
-        key: 'star',
+    candy = this.physics.add.group({
+        key: 'blueCandy',
         repeat: 4,
         setXY: { x: 12, y: 0, stepX: 70 }
     });
@@ -76,45 +80,42 @@ function create ()
 
     // Player 
     player.setBounce(0.2);
-    player.setCollideWorldBounds(true);
+    // player.setCollideWorldBounds(true);
     this.physics.add.collider(player, platforms);
 
     // Stars 
-    this.physics.add.collider(stars, platforms);
-    this.physics.add.overlap(player, stars, collectStar, null, this);
+    this.physics.add.collider(candy, platforms);
+    this.physics.add.overlap(player, candy, collectCandy, null, this);
     
     
-    stars.children.iterate(function (child) {
+    candy.children.iterate(function (child) {
         
-        child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
+        child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8)).setScale(.05);
         
     });
-
-    bombs = this.physics.add.group();
-
-    this.physics.add.collider(bombs, platforms);
-    
-    this.physics.add.collider(player, bombs, hitBomb, null, this);
 
     // Character animation
     this.anims.create({
         key: 'left',
-        frames: this.anims.generateFrameNumbers('dude', { start: 0, end: 3 }),
+        frames: this.anims.generateFrameNumbers('clara', { start: 0, end: 3 }),
         frameRate: 10,
         repeat: -1
     });
     this.anims.create({
         key: 'turn',
-        frames: [ { key: 'dude', frame: 4 } ],
+        frames: [ { key: 'clara', frame: 4 } ],
         frameRate: 20
     });
     this.anims.create({
         key: 'right',
-        frames: this.anims.generateFrameNumbers('dude', { start: 5, end: 8 }),
+        frames: this.anims.generateFrameNumbers('clara', { start: 5, end: 8 }),
         frameRate: 10,
         repeat: -1
     });
-    
+
+    // this.camera.follow(player);
+    this.cameras.main.startFollow(player);
+    // this.cameras.main.roundPixels = true;
 }
 
 function update ()
@@ -142,21 +143,16 @@ function update ()
         player.setVelocityY(-330);
     }
 }
-
-const collectStar = (player, star) =>
+function render () 
 {
-    star.disableBody(true, true);    
-    score += 10;
-    scoreText.setText('Score: ' + score);
+    game.debug.cameraInfo(game.camera, 32, 32);
+    game.debug.spriteCoords(player, 32, 500);
+
 }
 
-const hitBomb = (player, bomb) =>
+const collectCandy = (player, candy) =>
 {
-    this.physics.pause();
-
-    player.setTint(0xff0000);
-
-    player.anims.play('turn');
-
-    gameOver = true;
+    candy.disableBody(true, true);    
+    score += 10;
+    scoreText.setText('Score: ' + score);
 }
