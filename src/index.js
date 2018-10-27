@@ -40,7 +40,7 @@ var score = 0;
 
 function preload ()
 {
-    this.load.image('skyBackground', './assets/img/backgrounds/skyBackground.jpg');
+    this.load.image('bgWerewolf', './assets/img/backgrounds/bgWerewolf.png');
     this.load.image('ground', './assets/img/backgrounds/ground.png');
     this.load.image('blueCandy', './assets/img/objects/blueCandy.png');
     this.load.spritesheet('clara', 
@@ -52,19 +52,23 @@ function preload ()
         { frameWidth: 860, frameHeight: 327 }
     );
 
+    this.load.audio('BleedingMoon', './assets/audio/BleedingMoon.mp3');
+
 }
 
 function create ()
 {
     // Built-in Keyboard manager
+    this.cameras.main.setBounds(0, 0, 720 * 2, 176);
     cursors = this.input.keyboard.createCursorKeys();    
     // this.cameras.main.roundPixels = true;
 
     /* Creating game objects */
     
     // background
-    // const background = this.add.image(300, 200, 'skyBackground');
-    this.add.tileSprite(-100, -230, 1920, 1920, 'skyBackground');
+    const bgWerewolf = this.add.sprite(0, 0, 'bgWerewolf').setOrigin(0, 0);
+    // bgWerewolf.scale.x = 10
+    // this.add.tileSprite(-100, -230, 1920, 1920, 'bgWerewolf');
 
     platforms = this.physics.add.staticGroup();
     platforms.create(200, 400, 'ground').setScale(2).refreshBody();
@@ -141,6 +145,8 @@ function create ()
     });
     
     this.cameras.main.startFollow(player);
+    var bgMusic = this.sound.add('BleedingMoon');
+    bgMusic.play();
 }
 
 function update ()
