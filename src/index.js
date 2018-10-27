@@ -15,7 +15,7 @@ var config = {
         default: 'arcade',
         arcade: {
             gravity: { y: 500 },
-            debug: false
+            debug: true
         }
     },	
     scene: {
@@ -30,7 +30,7 @@ var platforms;
 var player;
 var candy;
 var scoreText;
-var bombs;
+var bats;
 
 
 // Phaser game var
@@ -47,6 +47,10 @@ function preload ()
         './assets/img/characters/clara.png',
         { frameWidth: 438, frameHeight: 620 }
     );
+    this.load.spritesheet('bat', 
+        './assets/img/characters/bat.png',
+        { frameWidth: 860, frameHeight: 327 }
+    );
 
 }
 
@@ -54,6 +58,7 @@ function create ()
 {
     // Built-in Keyboard manager
     cursors = this.input.keyboard.createCursorKeys();    
+    // this.cameras.main.roundPixels = true;
 
     /* Creating game objects */
     
@@ -64,6 +69,7 @@ function create ()
     platforms = this.physics.add.staticGroup();
     platforms.create(200, 400, 'ground').setScale(2).refreshBody();
     platforms.create(600,300, 'ground');
+
     // player
     player = this.physics.add.sprite(200, 200, 'clara').setScale(.1);
 
@@ -90,9 +96,15 @@ function create ()
     
     candy.children.iterate(function (child) {
         
-        child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8)).setScale(.05);
+        child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8)).setScale(.03);
         
     });
+
+    bats = this.physics.add.group();
+
+    this.physics.add.collider(bats, platforms);
+
+    this.physics.add.collider(player, bats, hitPlayer, null, this);
 
     // Character animation
     this.anims.create({
@@ -113,9 +125,22 @@ function create ()
         repeat: -1
     });
 
-    // this.camera.follow(player);
+
+    var x = (player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
+
+    var bat = bats.create(x, 16, 'bat').setScale(.1);
+    bat.setBounce(1);
+    bat.setCollideWorldBounds(true);
+    bat.setVelocity(Phaser.Math.Between(-200, 200), 20);
+    bat.allowGravity = false;
+    
+    candy.children.iterate(function (child) {
+
+        child.enableBody(true, child.x, 0, true, true);
+
+    });
+    
     this.cameras.main.startFollow(player);
-    // this.cameras.main.roundPixels = true;
 }
 
 function update ()
@@ -155,4 +180,13 @@ const collectCandy = (player, candy) =>
     candy.disableBody(true, true);    
     score += 10;
     scoreText.setText('Score: ' + score);
+}
+const hitPlayer = (player, bat) => {
+    this.physics.pause();
+
+    player.setTint(0xff0000);
+
+    player.anims.play('turn');
+
+    gameOver = true;
 }
