@@ -38,11 +38,13 @@ var bats;
 var game = new Phaser.Game(config);
 var gameOver = false;
 var score = 0;
+var title = 0;
 
 function preload ()
 {
     this.load.image('bgWerewolf', './assets/img/backgrounds/bgWerewolf.png');
     this.load.image('rip', './assets/img/backgrounds/rip.png');
+    this.load.image('title', './assets/img/objects/title.png');
     this.load.image('ground', './assets/img/backgrounds/ground.png');
     this.load.image('blueCandy', './assets/img/objects/blueCandy.png');
     this.load.image('redCandy', './assets/img/objects/redCandy.png');
@@ -94,6 +96,7 @@ function create ()
 
     // Score
     scoreText = this.add.text(16, 16, `score: ${score}`, { fontSize: '32px', fill: '#fff' });
+    title = this.add.text(16, 16, `score: ${score}`, { fontSize: '32px', fill: '#fff' });
     
     /* Game object physics */
 
@@ -174,6 +177,7 @@ function update ()
         // this.add.tileSprite(-100, -230, 1920, 1920, 'rip');
         // this.add.sprite(0, 0, 'rip').setOrigin(0, 0)
         const bgWerewolf = this.add.sprite(-750, 0, 'rip').setOrigin(0, 0).setScale(.4);
+        const title = this.add.sprite(-750, 0, 'title').setOrigin(0, 0).setScale(.4);
 
         this.physics.pause();
 
