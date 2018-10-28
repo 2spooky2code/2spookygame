@@ -22,7 +22,7 @@ var config = {
         preload: preload,
         update: update,
         create: create,
-        render: render 
+        // render: render 
     }
 };
 var cursors;
@@ -73,7 +73,9 @@ function create ()
 
     platforms = this.physics.add.staticGroup();
     platforms.create(200, 400, 'ground').setScale(2).refreshBody();
+    platforms.create(1450, 400, 'ground').setScale(2).refreshBody();
     platforms.create(600,300, 'ground');
+    platforms.create(50,200, 'ground');
 
     // player
     player = this.physics.add.sprite(200, 200, 'clara').setScale(.1);
@@ -82,7 +84,7 @@ function create ()
     candy = this.physics.add.group({
         key: 'blueCandy',
         repeat: 4,
-        setXY: { x: 12, y: 0, stepX: 70 }
+        setXY: { x: 12, y: 0, stepX: 350 }
     });
     // Score
     scoreText = this.add.text(16, 16, `score: ${score}`, { fontSize: '32px', fill: '#fff' });
@@ -101,7 +103,7 @@ function create ()
     
     candy.children.iterate(function (child) {
         
-        child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8)).setScale(.03);
+        child.setScale(.03);
         
     });
 
@@ -134,11 +136,15 @@ function create ()
 
     var x = (player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
 
-    var bat = bats.create(x, 16, 'bat').setScale(.2);
+    var bat = bats.create(x, 16, 'bat').setScale(.1);
     bat.setBounce(1);
     bat.setCollideWorldBounds(true);
-    bat.setVelocity(Phaser.Math.Between(-200, 200), 20);
-    bat.allowGravity = false;
+    bat.setVelocity(Phaser.Math.Between(100, 200), 20);
+    var bat2 = bats.create(100, 32, 'bat').setScale(.1);
+    bat2.setBounce(1);
+    bat2.setCollideWorldBounds(true);
+    bat2.setVelocity(Phaser.Math.Between(100, 200), 20);
+    bat2.allowGravity = false;
     
     candy.children.iterate(function (child) {
 
@@ -189,12 +195,12 @@ function update ()
         player.setVelocityY(-330);
     }
 }
-function render () 
-{
-    game.debug.cameraInfo(game.camera, 32, 32);
-    game.debug.spriteCoords(player, 32, 500);
+// function render () 
+// {
+//     game.debug.cameraInfo(game.camera, 32, 32);
+//     game.debug.spriteCoords(player, 32, 500);
 
-}
+// }
 
 const collectCandy = (player, candy) =>
 {
