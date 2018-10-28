@@ -29,6 +29,7 @@ var cursors;
 var platforms;
 var player;
 var candy;
+var redCandy;
 var scoreText;
 var bats;
 
@@ -44,6 +45,7 @@ function preload ()
     this.load.image('rip', './assets/img/backgrounds/rip.png');
     this.load.image('ground', './assets/img/backgrounds/ground.png');
     this.load.image('blueCandy', './assets/img/objects/blueCandy.png');
+    this.load.image('redCandy', './assets/img/objects/redCandy.png');
     this.load.spritesheet('clara', 
         './assets/img/characters/clara.png',
         { frameWidth: 438, frameHeight: 620 }
@@ -75,6 +77,7 @@ function create ()
     platforms.create(200, 400, 'ground').setScale(2).refreshBody();
     platforms.create(1450, 400, 'ground').setScale(2).refreshBody();
     platforms.create(600,300, 'ground');
+    platforms.create(300,100, 'ground');
     platforms.create(50,200, 'ground');
 
     // player
@@ -86,6 +89,9 @@ function create ()
         repeat: 4,
         setXY: { x: 12, y: 0, stepX: 350 }
     });
+
+    redCandy = this.physics.add.sprite(200,20, 'redCandy').setScale(.1);
+
     // Score
     scoreText = this.add.text(16, 16, `score: ${score}`, { fontSize: '32px', fill: '#fff' });
     
@@ -96,10 +102,12 @@ function create ()
     // player.setCollideWorldBounds(true);
     this.physics.add.collider(player, platforms);
 
-    // Stars 
+    // candy 
     this.physics.add.collider(candy, platforms);
     this.physics.add.overlap(player, candy, collectCandy, null, this);
     
+    this.physics.add.collider(redCandy, platforms);
+    this.physics.add.overlap(player, redCandy, collectCandy, null, this);
     
     candy.children.iterate(function (child) {
         
