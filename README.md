@@ -1,6 +1,6 @@
-# Phaser 3 Webpack Project Template
+# 2Spooky2Code
 
-A Phaser 3 Project Template
+A halloween theme hackathon video game.
 
 ### Requirements
 
