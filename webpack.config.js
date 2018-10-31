@@ -27,6 +27,10 @@ module.exports = {
             'CANVAS_RENDERER': JSON.stringify(true),
             'WEBGL_RENDERER': JSON.stringify(true)
         })
-    ]
+    ],
 
+  devServer: {
+    inline: true,
+    port: 8000
+  }
 };
