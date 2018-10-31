@@ -24,6 +24,7 @@
     "raw-loader": "^0.5.1"
   },
   "dependencies": {
+    "express": "^4.16.4",
     "phaser": "^3.3.0"
   }
 }
