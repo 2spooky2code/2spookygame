@@ -4,9 +4,8 @@
   "description": "A Phaser 3 Project Template",
   "main": "src/index.js",
   "scripts": {
-    "build": "webpack",
-    "start": "yarn build && webpack-dev-server",
-    "heroku-postbuild": "node ./build/server.js"
+    "build": "webpack && webpack-dev-server",
+    "start": "node ./build/server.js"
   },
   "repository": {
     "type": "git",
